@@ -10,21 +10,23 @@ app.use(cors());
 app.use(express.json())
 
 app.post('/users', (req, res) => {
+    try{
     const user = new User(req.body)
 
-    user.save().then(() => {
-        res.status(201).send(user)
-    }).catch((e) => {
-        res.status(400).send(e)
-    })
+   const saved = await user.save();
+   res.status(201).json({data: saved});
+    }catch (e) {
+        res.send(e)
+    }
 })
 
 app.get('/users', (req, res) => {
-    User.find({}).then((users) => {
-        res.send(users)
-    }).catch((e) => {
-        res.status(400).send(e)
-    })  
+    try{
+   const user =  await User.find({});
+   res.status(200).json({data: user});
+    }catch(e){
+        res.status(400).send(e);
+    }
 })
 
 app.patch('/users/:id', async (req, res) => {
@@ -43,7 +45,7 @@ app.patch('/users/:id', async (req, res) => {
             return res.status(404).send()
         }
 
-        res.send(user)
+        res.json({data:user})
     } catch (e) {
         res.status(400).send(e)
     }
@@ -57,7 +59,7 @@ app.delete('/users/:id', async (req, res) => {
             return res.status(404).send()
         }
 
-        res.send(user)
+        res.json({data:user})
     } catch (e) {
         res.status(500).send()
     }
