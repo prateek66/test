@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000
 app.use(cors());
 app.use(express.json())
 
-app.post('/users', (req, res) => {
+app.post('/users', async(req, res) => {
     try{
     const user = new User(req.body)
 
@@ -20,7 +20,7 @@ app.post('/users', (req, res) => {
     }
 })
 
-app.get('/users', (req, res) => {
+app.get('/users', async(req, res) => {
     try{
    const user =  await User.find({});
    res.status(200).json({data: user});
