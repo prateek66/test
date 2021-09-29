@@ -29,28 +29,17 @@ app.get('/users', async(req, res) => {
     }
 })
 
-app.patch('/users/:id', async (req, res) => {
-    const updates = Object.keys(req.body)
-    const allowedUpdates = ['name', 'email', 'phone_no']
-    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
-
-    if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!' })
-    }
-
+app.patch('/users/:id', async(req,res) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-    
-        if (!user) {
-            return res.status(404).send()
-        }
+        const id = req.params.id;
 
-        res.json({data:user})
-    } catch (e) {
-        res.status(400).send(e)
+        const users = await User.findByIdAndUpdate(id, {$set: req.body}, {new: true});
+        res.status(200).json({data: users});
+    } catch (err) {
+        console.log(err);
+        res.status(400).send(err)
     }
 })
-
 app.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id)
